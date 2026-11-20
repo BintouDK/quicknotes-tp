@@ -1,0 +1,10 @@
+
+services:
+  quicknotes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: quicknotes:v1
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

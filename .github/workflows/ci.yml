@@ -1,0 +1,76 @@
+
+name: QuickNotes CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t quicknotes:v1 .
+
+      - name: Run Docker container
+        run: |
+          docker run -d \
+            -p 8080:8080 \
+            --name quicknotes-test \
+            quicknotes:v1
+
+      - name: Test health endpoint
+        run: |
+          curl --fail \
+            --retry 5 \
+            --retry-delay 2 \
+            --retry-connrefused \
+            http://localhost:8080/health
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f quicknotes-test || true
+
+name: QuickNotes CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t quicknotes:v1 .
+
+      - name: Run Docker container
+        run: |
+          docker run -d \
+            -p 8080:8080 \
+            --name quicknotes-test \
+            quicknotes:v1
+
+      - name: Test health endpoint
+        run: |
+          curl --fail \
+            --retry 5 \
+            --retry-delay 2 \
+            --retry-connrefused \
+            http://localhost:8080/health
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f quicknotes-test || true
